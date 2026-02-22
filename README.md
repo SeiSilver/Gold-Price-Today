@@ -2,6 +2,8 @@
 
 Track gold prices from Bao Tin Minh Chau (BTMC) API with PostgreSQL and Bootstrap UI.
 
+**API Reference:** [BTMC API Giá vàng](https://btmc.vn/thong-tin/tai-lieu-api/api-gia-vang-17784.html)
+
 ## Prerequisites
 
 - Node.js 18+

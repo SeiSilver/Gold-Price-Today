@@ -69,7 +69,7 @@ async function fetchAndStoreGoldPrices() {
     return { success: true, count: items.length };
   } catch (err) {
     console.error('[Cron] Error fetching/storing gold prices:', err.message);
-    return { success: false, count: 0, error: err.message };
+    return { success: false, count: 0, error: "Không có data mới" };
   }
 }
 
@@ -125,9 +125,17 @@ app.get('/api/chart', async (req, res) => {
 app.get('/', async (req, res) => {
   try {
     const selectedGoldName = req.query.goldName || 'NHẪN TRÒN TRƠN (Vàng Rồng Thăng Long)';
-
+    const query = `
+    SELECT * FROM (
+      SELECT DISTINCT ON (name) *
+      FROM gold_prices
+      ORDER BY name, recorded_at DESC
+    ) AS latest_prices
+    ORDER BY buy_price ASC;
+  `;
+  pool.query(query, (err, res) => { /* ... */ });
     const [latestResult, goldNamesResult, chartData] = await Promise.all([
-      pool.query('SELECT * FROM gold_prices ORDER BY recorded_at DESC LIMIT 20'),
+      pool.query(query),
       pool.query('SELECT DISTINCT name FROM gold_prices ORDER BY name'),
       getChartDataForGold(selectedGoldName),
     ]);
